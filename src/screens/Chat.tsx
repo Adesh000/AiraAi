@@ -9,14 +9,11 @@ import {
   Platform,
   StyleSheet,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
-import { MessageCircle, SendHorizonal } from 'lucide-react-native';
-import Animated, {
-  useSharedValue,
-  withTiming,
-  useAnimatedStyle,
-} from 'react-native-reanimated';
-import { COLORS } from '../utils'; // optional - use your existing theme file
+import { LogOut, MessageCircle, SendHorizonal } from 'lucide-react-native';
+import { COLORS } from '../utils';
+import { storage } from '../storage';
 
 type Message = {
   id: string;
@@ -27,8 +24,8 @@ type Message = {
 
 const Chat = () => {
   const [messages, setMessages] = useState<Message[]>([]);
-  const [input, setInput] = useState('');
-  const [isTyping, setIsTyping] = useState(false);
+  const [input, setInput] = useState<string>('');
+  const [isTyping, setIsTyping] = useState<boolean>(false);
   const flatListRef = useRef<FlatList>(null);
 
   // --- handle auto-scroll to latest message ---
@@ -59,7 +56,7 @@ const Chat = () => {
           return [...prev, { id, sender: 'ai', text: currentText, memoryTag }];
         }
       });
-    }, 35); // controls typing speed
+    }, 50); // controls typing speed
   };
 
   // --- basic AI logic ---
@@ -80,6 +77,19 @@ const Chat = () => {
       };
     }
     return { text: "That's interesting. Tell me more about that." };
+  };
+
+  const handleLogout = () => {
+    Alert.alert('Logout', 'Are you sure you want to logout?', [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Logout',
+        style: 'destructive',
+        onPress: () => {
+          storage.set('access_token', '');
+        },
+      },
+    ]);
   };
 
   // --- send message ---
@@ -128,6 +138,12 @@ const Chat = () => {
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>Chat</Text>
+        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+          <LogOut color="#fff" size={20} />
+        </TouchableOpacity>
+      </View>
       <FlatList
         ref={flatListRef}
         data={messages}
@@ -233,5 +249,25 @@ const styles = StyleSheet.create({
     backgroundColor: '#8f24f5',
     borderRadius: 24,
     padding: 10,
+  },
+  header: {
+    height: 60,
+    backgroundColor: '#121212',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: '#2c2c2c',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+  },
+  headerTitle: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: '600',
+  },
+  logoutButton: {
+    padding: 8,
+    borderRadius: 20,
+    backgroundColor: COLORS.accent,
   },
 });
