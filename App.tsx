@@ -1,12 +1,24 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { StatusBar, StyleSheet } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import { storage } from './src/storage';
-import { AuthStack, BottomTab, Login } from './src';
+import { BottomTab, COLORS, Login, storage } from './src';
+import { useEffect, useState } from 'react';
 
 function App() {
-  const token = storage.getString('access_token');
+  const [token, setToken] = useState<string | null>(
+    storage.getString('access_token') || null,
+  );
   console.log('🚀 ~ App ~ token:', token);
+
+  useEffect(() => {
+    // Subscribe to MMKV changes
+    const listener = storage.addOnValueChangedListener(changedKey => {
+      if (changedKey === 'access_token') {
+        setToken(storage.getString('access_token') || null);
+      }
+    });
+    return () => listener.remove();
+  }, []);
   return (
     <SafeAreaProvider>
       <StatusBar barStyle="light-content" />
@@ -22,7 +34,7 @@ function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#262626',
+    backgroundColor: COLORS.primaryBackgroud,
   },
 });
 

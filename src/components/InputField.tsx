@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 import React, { memo } from 'react';
 import { COLORS } from '../utils';
+import { Eye, EyeOff } from 'lucide-react-native';
 
 interface InputFieldProps {
   placeholder: string;
@@ -42,11 +43,11 @@ const InputField = memo(
           style={styles.eyeIcon}
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         >
-          {/* {secureTextEntry ? (
+          {secureTextEntry ? (
             <EyeOff color={COLORS.textSecondary} size={22} />
           ) : (
             <Eye color={COLORS.textSecondary} size={22} />
-          )} */}
+          )}
         </TouchableOpacity>
       )}
     </View>

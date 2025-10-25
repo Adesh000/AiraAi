@@ -4,9 +4,7 @@ import {
   Platform,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
-  View,
 } from 'react-native';
 import React, { useCallback, useState } from 'react';
 import { COLORS } from '../utils';
@@ -44,7 +42,7 @@ const Login = () => {
     console.log('✅ Email:', email);
     console.log('✅ Password:', password);
     if (email.trim() === 'test@aira.ai' && password.trim() === 'password') {
-      storage.set('access_token', true);
+      storage.set('access_token', 'true');
       Alert.alert('Login Successful', `Welcome back, ${email}!`);
     }
   }, [email, password, validateInputs]);

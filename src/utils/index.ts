@@ -4,4 +4,5 @@ export const COLORS = {
   textPrimary: '#FFFFFF',
   textSecondary: '#A3A3A3',
   accent: '#8f24f5',
+  primaryBackgroud: '#262626',
 };
